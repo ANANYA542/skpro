@@ -1,5 +1,6 @@
 """Generalized Pareto probability distribution for skpro."""
 
+import pandas as pd
 from scipy.stats import genpareto
 
 from skpro.distributions.base import BaseDistribution
@@ -21,7 +22,8 @@ class GeneralizedPareto(BaseDistribution):
     _tags = {
         "authors": ["arnavk23"],
         "distr:measuretype": "continuous",
-        "capabilities:exact": ["mean", "var", "pdf", "log_pdf", "cdf", "ppf"],
+        "capabilities:exact": ["mean", "var", "pdf", "cdf", "ppf"],
+        "distr:paramtype": "parametric",
         "broadcast_init": "on",
     }
 
@@ -90,6 +92,16 @@ class GeneralizedPareto(BaseDistribution):
     @classmethod
     def get_test_params(cls, parameter_set="default"):
         """Return test parameters for GeneralizedPareto."""
-        params1 = {"c": 0.5, "scale": 1.0, "loc": 0.0}
-        params2 = {"c": 1.0, "scale": 2.0, "loc": 1.0}
-        return [params1, params2]
+        # array case
+        params1 = {"c": [[0.5, 1.0], [2.0, 0.1]], "scale": 1.0, "loc": 0.0}
+        # index / columns case
+        params2 = {
+            "c": 1.0,
+            "scale": 2.0,
+            "loc": 1.0,
+            "index": pd.Index([1, 2, 5]),
+            "columns": pd.Index(["a", "b"]),
+        }
+        # scalar case
+        params3 = {"c": 0.5, "scale": 1.0, "loc": 0.0}
+        return [params1, params2, params3]
